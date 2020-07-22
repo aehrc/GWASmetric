@@ -1,8 +1,14 @@
 # GWASmetric
 
+All notebooks are provided in ipynb, html and markdown format to be readable without jupyter notebook installed.
+
 ## New
 
-The user can define his/her own association power test. Search for ##User-Def## in the [GWASmetric](Notebook/GWASmetric.ipynb) Notebook.
+The user can define his/her own association power test. Search for ##User-Def## in the [Notebook](Notebook) Notebook.
+
+In case user does not have Hial installed, we have a notebook that does not uses Hail. See [noHail](noHail).
+
+In case user does not have Hial and Plink installed, we have a notebook that does not uses Hail and Plink. See [noHail-noPlink](noHail-noPlink).
 
 ==================================================
 
