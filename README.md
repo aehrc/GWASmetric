@@ -1,5 +1,11 @@
 # GWASmetric
 
+## New
+
+The user can define his/her own association power test. Search for ##User-Def## in the [GWASmetric](Notebook/GWASmetric.ipynb) Notebook.
+
+==================================================
+
 Comparison of the GWAS association powers computed by
 
 - Hail (wald, score and lrt tests)
