@@ -175,6 +175,17 @@ def EntropyIG(ParentSetPurity, CaseRef, CaseHet, CaseHom, CtrlRef, CtrlHet, Ctrl
 # print("==============================")
 ```
 
+## User Define Association Power Test
+
+
+```python
+##USER-DEF##
+# Define your association power test below and return the association power.
+# Do not change the function name (or change it in the entire notebook)
+def UserDef(CaseRef, CaseHet, CaseHom, CtrlRef, CtrlHet, CtrlHom):
+    return 0
+```
+
 # SNP simulation
 ## Also compute Gini and Entropy Information Gained for SNPs
 All different possibility of the contingency table (given number of cases and controls) are considered and the corresponding SNP genotype is produced for population of cases and controls.
@@ -224,6 +235,8 @@ def SimulateSNPs(writer, giniParentSetPurity, entropyParentSetPurity, numCase, n
                     
                     giniIG    = GiniIG   (giniParentSetPurity   , refCase, hetCase, homCase, refCtrl, hetCtrl, homCtrl)
                     entropyIG = EntropyIG(entropyParentSetPurity, refCase, hetCase, homCase, refCtrl, hetCtrl, homCtrl)
+                    ##USER-DEF##
+                    userDef   = UserDef(refCase, hetCase, homCase, refCtrl, hetCtrl, homCtrl)
                     
                     snpID  =     str(refCase)
                     snpID += "#"+str(hetCase)
@@ -233,6 +246,7 @@ def SimulateSNPs(writer, giniParentSetPurity, entropyParentSetPurity, numCase, n
                     snpID += "#"+str(homCtrl)
                     snpID += "#"+str(giniIG)
                     snpID += "#"+str(entropyIG)
+                    snpID += "#"+str(userDef)
                     
                     genotype = ["1", pos, snpID, "A", "C", ".", ".", ".", "GT"]
                     genotype += ["0/0"]*refCtrl
@@ -362,7 +376,7 @@ aws s3 cp $ofn.fam $s3
 # Extract informaiton
 tail -n +2 $ofn.assoc | awk '{OFS="\t";print($2,$8,$9)}' | awk 'BEGIN{print("rsid\tplink_chi2\tplink_pval")}{print}' > $ofn.GiniPval.tsv
 aws s3 cp $ofn.GiniPval.tsv $s3
-# tail -n +2 $ofn.assoc | awk '{OFS="\t";print($2,$9)}' | tr '#' \\t | awk 'BEGIN{print("refCase\thetCase\thomCase\trefCtrl\thetCtrl\thomCtrl\tGiniIG\tEntropyIG\tPval")}{print}' > $ofn.GiniPval.tsv
+# tail -n +2 $ofn.assoc | awk '{OFS="\t";print($2,$9)}' | tr '#' \\t | awk 'BEGIN{print("refCase\thetCase\thomCase\trefCtrl\thetCtrl\thomCtrl\tGiniIG\tEntropyIG\tUserDef\tPval")}{print}' > $ofn.GiniPval.tsv
 
 #head $ofn.GiniPval.tsv
 #head $ofn.frq.cc
@@ -414,7 +428,7 @@ plink = hl.import_table(bfile+'.GiniPval.tsv').key_by('rsid')
 ```python
 lr = score.join(lrt).join(wald).join(plink)
 lr.describe()
-lr = lr.rename({'rsid' : 'refCase#hetCase#homCase#refCtrl#hetCtrl#homCtrl#GiniIG#EntropyIG'})
+lr = lr.rename({'rsid' : 'refCase#hetCase#homCase#refCtrl#hetCtrl#homCtrl#GiniIG#EntropyIG#UserDef'})
 lr.export(bfile+'.all.tsv')
 ```
 
@@ -539,4 +553,17 @@ pdf.plot(x='wald_zstat', y='EntropyIG', style='o')
 
 ```python
 pdf.plot(x='plink_chi2', y='EntropyIG', style='o')
+```
+
+# UserDef vs Gini
+
+
+```python
+##USER-DEF##
+pdf.plot(x='UserDef', y='GiniIG', style='o')
+```
+
+
+```python
+
 ```
